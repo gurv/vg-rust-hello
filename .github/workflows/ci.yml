@@ -21,19 +21,23 @@ jobs:
       with:
         command: build
         args: --release --all-features
-    - name: Slack
-      if: always()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,workflow,job
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    - name: Telegram
-      uses: appleboy/telegram-action@master
-      if: always()
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        args: ${{ github.repository }} ${{ github.workflow }} ${{ github.job }} ${{ job.status }}
+
+    # FIXME: Error: Specify secrets.SLACK_WEBHOOK_URL
+    # - name: Slack
+    #   if: always()
+    #   uses: 8398a7/action-slack@v3
+    #   with:
+    #     status: ${{ job.status }}
+    #     fields: repo,message,workflow,job
+    #   env:
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    # FIXME: 2024/02/01 18:04:16 missing telegram token or user list
+    # - name: Telegram
+    #   uses: appleboy/telegram-action@master
+    #   if: always()
+    #   with:
+    #     to: ${{ secrets.TELEGRAM_TO }}
+    #     token: ${{ secrets.TELEGRAM_TOKEN }}
+    #     args: ${{ github.repository }} ${{ github.workflow }} ${{ github.job }} ${{ job.status }}
   
