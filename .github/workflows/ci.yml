@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - uses: cargo build --release --all-features
+      - run: cargo build --release --all-features
 
     # FIXME: Error: Specify secrets.SLACK_WEBHOOK_URL
     # - name: Slack
