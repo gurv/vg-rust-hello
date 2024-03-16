@@ -10,17 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-    - name: Build
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --release --all-features
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: cargo build --release --all-features
 
     # FIXME: Error: Specify secrets.SLACK_WEBHOOK_URL
     # - name: Slack
