@@ -1,0 +1,26 @@
+[package]
+name = "vg-rust-hello-server"
+version = "0.0.0"
+license = { workspace = true }
+repository = { workspace = true }
+edition = { workspace = true }
+
+# [features]
+# default = ["ai-models"]
+# assets = []
+# ai-models = ["vg-rust-hello-core/ai"]
+
+[dependencies]
+vg-rust-hello-core = { path = "../../core", features = [
+#	"ffmpeg",
+#	"heif",
+] }
+
+# axum = { workspace = true }
+http = { workspace = true }
+rspc = { workspace = true, features = ["axum"] }
+tokio = { workspace = true, features = ["sync", "rt-multi-thread", "signal"] }
+tracing = { workspace = true }
+
+include_dir = "0.7.3"
+mime_guess = "2.0.4"

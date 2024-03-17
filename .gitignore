@@ -1,10 +1,24 @@
+node_modules
+packages/*/node_modules
+package-lock.json
+*.tsbuildinfo
+.eslintcache
+.turbo
+.DS_Store
+.env*
+
+dist
 debug/
 target/
 
-# Remove Cargo.lock from gitignore if creating an executable, leave it for libraries
-# More information here https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html
 Cargo.lock
 
 **/*.rs.bk
 
 *.pdb
+
+.cargo/config
+.cargo/config.toml
+
+.vite-inspect
+vite.config.ts.*

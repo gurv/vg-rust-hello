@@ -1,0 +1,30 @@
+[package]
+name = "vg-rust-hello-desktop"
+version = "0.2.5"
+description = "The universal file manager."
+authors = ["gurv <vladimir.gurinovich@gmail.com>"]
+default-run = "vg-rust-hello-desktop"
+license = { workspace = true }
+repository = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+vg-rust-hello-core = { path = "../../../core" }
+axum = { workspace = true, features = ["headers", "query"] }
+tauri-specta = { workspace = true, features = ["typescript"] }
+tauri = { version = "=1.5.3", features = [
+#	"macos-private-api",
+#	"path-all",
+#	"protocol-all",
+#	"os-all",
+#	"shell-all",
+#	"dialog-all",
+	"linux-protocol-headers",
+#	"updater",
+#	"window-all",
+	"native-tls-vendored",
+	"tracing",
+] }
+
+[build-dependencies]
+tauri-build = { version = "1.5.0", features = [] }

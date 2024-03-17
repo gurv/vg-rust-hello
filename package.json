@@ -1,0 +1,58 @@
+{
+	"name": "@svg_rust_hello/monorepo",
+	"private": true,
+	"packageManager": "^pnpm@8.15.4",
+	"scripts": {
+		"preprep": "pnpm --filter @svg_rust_hello/scripts -- prep",
+		"prep": "pnpm gen:prisma",
+		"postprep": "pnpm codegen",
+		"build": "turbo run build",
+		"landing-web": "turbo run dev --parallel --filter=@vg_rust_hello/landing --filter=@vg_rust_hello/web",
+		"gen:migrations": "cd core && cargo prisma migrate dev",
+		"gen:prisma": "cd core && cargo prisma generate",
+		"format": "prettier --write .",
+		"desktop": "pnpm multi --filter @vg_rust_hello/desktop",
+		"tauri": "pnpm desktop tauri",
+		"web": "pnpm --filter @vg_rust_hello/web -- ",
+		"mobile": "pnpm --filter @vg_rust_hello/mobile --",
+		"core": "pnpm --filter @vg_rust_hello/server -- ",
+		"landing": "pnpm --filter @vg_rust_hello/landing -- ",
+		"ui": "pnpm --filter @vg_rust_hello/ui -- ",
+		"interface": "pnpm --filter @vg_rust_hello/interface -- ",
+		"assets": "pnpm --filter @vg_rust_hello/assets -- ",
+		"client": "`pnpm --filter @vg_rust_hello/client -- ",
+		"storybook": "pnpm --filter @vg_rust_hello/storybook -- ",
+		"prisma": "cd core && cargo prisma",
+		"dev:web": "turbo run dev --filter @vg_rust_hello/web --filter @vg_rust_hello/server",
+		"dev:desktop": "pnpm run --filter @vg_rust_hello/desktop tauri dev",
+		"bootstrap:desktop": "cargo clean && ./scripts/setup.sh && pnpm i && pnpm prep && pnpm tauri dev",
+		"codegen": "cargo test -p vg-rust-hello-core api::tests::test_and_export_rspc_bindings -- --exact",
+		"typecheck": "pnpm -r typecheck",
+		"lint": "turbo run lint",
+		"lint:fix": "turbo run lint -- --fix",
+		"clean": "git clean -qfX ."
+	},
+	"pnpm": {
+		"overrides": {
+			"@types/node": "~18.19.21",
+			"@typescript-eslint/parser": "^7.1.0"
+		}
+	},
+	"devDependencies": {
+		"@babel/core": "^7.23.9",
+		"@babel/plugin-syntax-import-assertions": "^7.23.3",
+		"@cspell/dict-rust": "^4.0.2",
+		"@cspell/dict-typescript": "^3.1.2",
+		"@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+		"cspell": "^8.4.1",
+		"prettier": "^3.2.5",
+		"prettier-plugin-tailwindcss": "^0.5.11",
+		"turbo": "^1.12.4",
+		"turbo-ignore": "^1.12.4",
+		"typescript": "^5.3.3",
+		"vite": "^5.1.4"
+	},
+	"eslintConfig": {
+		"root": true
+	}
+}

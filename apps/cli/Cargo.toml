@@ -1,0 +1,16 @@
+[package]
+name = "vg-rust-hello-cli"
+version = "0.0.0"
+license = { workspace = true }
+repository = { workspace = true }
+edition = { workspace = true }
+
+[features]
+default = ["crossterm"]
+
+[dependencies]
+tui = "0.19"
+termion = { version = "1.5", optional = true }
+crossterm = { version = "0.25", optional = true }
+rand = "0.8"
+argh = "0.1"
