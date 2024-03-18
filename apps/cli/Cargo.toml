@@ -1,5 +1,5 @@
 [package]
-name = "vg-rust-hello-cli"
+name = "vg-cli"
 version = "0.0.0"
 license = { workspace = true }
 repository = { workspace = true }

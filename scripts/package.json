@@ -1,5 +1,5 @@
 {
-	"name": "@vg_rust_hello/scripts",
+	"name": "@vg/scripts",
 	"private": true,
 	"main": "./preprep.mjs",
 	"type": "module",

@@ -6,7 +6,7 @@
     "distDir": "../dist",
     "devPath": "http://localhost:8001",
     "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm turbo run build --filter=@vg_rust_hello/desktop..."
+    "beforeBuildCommand": "pnpm turbo run build --filter=@vg/desktop..."
   },
   "tauri": {
     "bundle": {

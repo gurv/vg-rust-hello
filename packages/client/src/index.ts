@@ -14,7 +14,7 @@ if (
 	globalThis.isDev === undefined ||
 	globalThis.rspcLinks === undefined
 )
-	throw new Error('Please ensure you have patched `globalThis` before importing `@vg_rust_hello/client`!');
+	throw new Error('Please ensure you have patched `globalThis` before importing `@vg/client`!');
 
 declare global {
 	// Tauri is cringe and returns a Promise breaking compatibility with the browser API

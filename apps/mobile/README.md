@@ -1,1 +1,1 @@
-# vg-rust-hello
+# vg

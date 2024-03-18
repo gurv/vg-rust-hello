@@ -1,4 +1,4 @@
-# vg-rust-hello
+# vg
 
 [![.github/workflows/ci.yml](https://github.com/gurv/vg-rust-hello/actions/workflows/ci.yml/badge.svg)](https://github.com/gurv/vg-rust-hello/actions/workflows/ci.yml)
 
@@ -23,7 +23,7 @@ $ cargo build --target wasm32-unknown-unknown --release
 $ cargo check
 
 $ cargo run
-$ ./target/debug/vg-rust-hello
+$ ./target/debug/vg
 $ docker image build .
 
 $ cd hello-wasm
@@ -39,4 +39,6 @@ $ cd ..
 $ cd hello-tauri
 $ cargo install tauri-cli
 $ cargo tauri dev 
+
+$ pnpm run --filter @vg/desktop tauri dev
 ```

@@ -87,4 +87,4 @@ fi
 echo "Fix spacedrive's directories permissions"
 chown -R "${PUID}:${PGID}" /data
 
-exec su spacedrive -s /usr/bin/vg-rust-hello-server -- "$@"
+exec su spacedrive -s /usr/bin/vg-server -- "$@"

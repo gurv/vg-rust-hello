@@ -1,5 +1,5 @@
 {
-	"name": "@vg_rust_hello/assets",
+	"name": "@vg/assets",
 	"version": "0.0.0",
 	"private": true,
 	"sideEffects": false,

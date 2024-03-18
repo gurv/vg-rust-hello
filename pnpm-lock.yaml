@@ -69,7 +69,7 @@ importers:
       '@tauri-apps/api':
         specifier: 1.5.1
         version: 1.5.1
-      '@vg_rust_hello/client':
+      '@vg/client':
         specifier: workspace:*
         version: link:../../packages/client
       consistent-hash:
@@ -103,7 +103,7 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.19
         version: 18.2.22
-      '@vg_rust_hello/config':
+      '@vg/config':
         specifier: workspace:*
         version: link:../../packages/config
       sass:
@@ -167,7 +167,7 @@ importers:
       '@types/react':
         specifier: ^18.2.61
         version: 18.2.66
-      '@vg_rust_hello/config':
+      '@vg/config':
         specifier: workspace:*
         version: link:../config
       typescript:

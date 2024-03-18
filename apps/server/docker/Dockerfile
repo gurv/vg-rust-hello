@@ -81,7 +81,7 @@ RUN --mount=type=cache,target=/root/.cache/prisma/binaries/cli/ \
 
 COPY --from=web /srv/spacedrive/apps/web/dist /srv/spacedrive/apps/web/dist
 
-RUN cargo build --features assets --release -p vg-rust-hello-server
+RUN cargo build --features assets --release -p vg-server
 
 #--
 
@@ -100,7 +100,7 @@ ENV TZ=UTC \
 	LANGUAGE=en \
 	DATA_DIR=/data
 
-COPY --from=server --chmod=755 /srv/spacedrive/target/release/vg-rust-hello-server /usr/bin/
+COPY --from=server --chmod=755 /srv/spacedrive/target/release/vg-server /usr/bin/
 COPY --from=server --chmod=755 /lib/x86_64-linux-gnu/libgcc_s.so.1 /usr/lib/
 COPY --from=server --chmod=755 /srv/spacedrive/apps/.deps/lib /usr/lib/spacedrive
 
