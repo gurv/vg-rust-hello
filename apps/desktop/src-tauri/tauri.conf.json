@@ -1,33 +1,33 @@
 {
-  "package": {
-    "productName": "Hello Rust"
-  },
-  "build": {
-    "distDir": "../dist",
-    "devPath": "http://localhost:8001",
-    "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm turbo run build --filter=@vg/desktop..."
-  },
-  "tauri": {
-    "bundle": {
-      "identifier": "com.tauri.dev",
-      "active": true,
+	"package": {
+		"productName": "Hello Rust"
+	},
+	"build": {
+		"distDir": "../dist",
+		"devPath": "http://localhost:8001",
+		"beforeDevCommand": "pnpm dev",
+		"beforeBuildCommand": "pnpm turbo run build --filter=@vg/desktop..."
+	},
+	"tauri": {
+		"bundle": {
+			"identifier": "com.tauri.dev",
+			"active": true,
 			"targets": ["deb", "msi", "dmg", "updater"],
-      "icon": [
+			"icon": [
 				"icons/32x32.png",
 				"icons/128x128.png",
 				"icons/128x128@2x.png",
 				"icons/icon.icns",
 				"icons/icon.ico"
-      ],
+			],
 			"macOS": {
 				"minimumSystemVersion": "10.15",
 				"exceptionDomain": null,
 				"entitlements": null
 			}
-    },
-    "security": {
-      "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost"
-    }
-  }
+		},
+		"security": {
+			"csp": "default-src 'self'; connect-src ipc: http://ipc.localhost"
+		}
+	}
 }

@@ -1,50 +1,54 @@
-import { useEffect } from 'react';
-import { createMutable } from 'solid-js/store';
+import { useEffect } from "react";
+import { createMutable } from "solid-js/store";
 
-import type { BackendFeature } from '../core';
-import { nonLibraryClient, useBridgeQuery } from '../rspc';
-import { createPersistedMutable, useObserver, useSolidStore } from '../solid';
+import type { BackendFeature } from "../core";
+import { nonLibraryClient, useBridgeQuery } from "../rspc";
+import { createPersistedMutable, useObserver, useSolidStore } from "../solid";
 
 export const features = [
-	'backups',
-	'debugRoutes',
-	'solidJsDemo',
-	'hostedLocations',
-	'debugDragAndDrop'
+	"backups",
+	"debugRoutes",
+	"solidJsDemo",
+	"hostedLocations",
+	"debugDragAndDrop",
 ] as const;
 
 // This defines which backend feature flags show up in the UI.
 // This is kinda a hack to not having the runtime array of possible features as Specta only exports the types.
-export const backendFeatures: BackendFeature[] = ['filesOverP2P', 'cloudSync'];
+export const backendFeatures: BackendFeature[] = ["filesOverP2P", "cloudSync"];
 
 export type FeatureFlag = (typeof features)[number] | BackendFeature;
 
 export const featureFlagsStore = createPersistedMutable(
-	'sd-featureFlags',
+	"sd-featureFlags",
 	createMutable({
-		enabled: [] as FeatureFlag[]
+		enabled: [] as FeatureFlag[],
 	}),
 	{
 		onSave: (data) => {
 			// Clone so we don't mess with the original data
 			const data2: typeof data = JSON.parse(JSON.stringify(data));
 			// Only save frontend flags (backend flags are saved in the backend)
-			data2.enabled = data2.enabled.filter((f) => features.includes(f as any));
+			data2.enabled = data2.enabled.filter((f) =>
+				features.includes(f as any),
+			);
 			return data2;
-		}
-	}
+		},
+	},
 );
 
 export function useLoadBackendFeatureFlags() {
-	const nodeConfig = useBridgeQuery(['nodeState']);
+	const nodeConfig = useBridgeQuery(["nodeState"]);
 
 	useEffect(() => {
 		featureFlagsStore.enabled = [
 			// Remove all backend features.
-			...featureFlagsStore.enabled.filter((f) => features.includes(f as any)),
+			...featureFlagsStore.enabled.filter((f) =>
+				features.includes(f as any),
+			),
 			// Add back in current state of backend features
 
-			...(nodeConfig.data?.features ?? [])
+			...(nodeConfig.data?.features ?? []),
 		];
 	}, [nodeConfig.data?.features]);
 }
@@ -57,7 +61,9 @@ export function useFeatureFlags() {
 
 export function useFeatureFlag(flag: FeatureFlag | FeatureFlag[]) {
 	useFeatureFlags(); // Rerender on change
-	return Array.isArray(flag) ? flag.every((f) => isEnabled(f)) : isEnabled(flag);
+	return Array.isArray(flag)
+		? flag.every((f) => isEnabled(f))
+		: isEnabled(flag);
 }
 
 export const isEnabled = (flag: FeatureFlag) =>
@@ -76,11 +82,11 @@ export function toggleFeatureFlag(flags: FeatureFlag | FeatureFlag[]) {
 				const result = featureFlagsStore.enabled.find((ff) => f === ff)
 					? true
 					: await confirm(
-							'This feature will render your database broken and it WILL need to be reset! Use at your own risk!'
+							"This feature will render your database broken and it WILL need to be reset! Use at your own risk!",
 						);
 
 				if (result) {
-					nonLibraryClient.mutation(['toggleFeatureFlag', f as any]);
+					nonLibraryClient.mutation(["toggleFeatureFlag", f as any]);
 				}
 			})();
 
@@ -89,9 +95,9 @@ export function toggleFeatureFlag(flags: FeatureFlag | FeatureFlag[]) {
 
 		if (!featureFlagsStore.enabled.find((ff) => f === ff)) {
 			let message: string | undefined;
-			if (f === 'backups') {
+			if (f === "backups") {
 				message =
-					'Backups are done on your live DB without proper Sqlite snapshotting. This will work but it could result in unintended side so be careful!';
+					"Backups are done on your live DB without proper Sqlite snapshotting. This will work but it could result in unintended side so be careful!";
 			}
 
 			if (message) {
@@ -107,7 +113,9 @@ export function toggleFeatureFlag(flags: FeatureFlag | FeatureFlag[]) {
 				featureFlagsStore.enabled.push(f);
 			}
 		} else {
-			featureFlagsStore.enabled = featureFlagsStore.enabled.filter((ff) => f !== ff);
+			featureFlagsStore.enabled = featureFlagsStore.enabled.filter(
+				(ff) => f !== ff,
+			);
 		}
 	});
 }
@@ -116,7 +124,7 @@ export function toggleFeatureFlag(flags: FeatureFlag | FeatureFlag[]) {
 export function withFeatureFlag(
 	flag: FeatureFlag | FeatureFlag[],
 	Component: React.FunctionComponent,
-	fallback: React.ReactNode = null
+	fallback: React.ReactNode = null,
 ): React.FunctionComponent {
 	return (props) => {
 		const enabled = useFeatureFlag(flag);

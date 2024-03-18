@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { createReaction, createRoot, Owner, runWithOwner } from 'solid-js';
+import { useEffect, useRef, useState } from "react";
+import { createReaction, createRoot, Owner, runWithOwner } from "solid-js";
 
 // TODO: Can we unify these hooks???
 
@@ -13,13 +13,16 @@ export function useObserver<T>(fn: () => T) {
 		},
 		// An really ugly workaround for React `StrictMode`'s double firing of `useEffect`.
 		doneFirstFire: false,
-		firedDuringRender: false
+		firedDuringRender: false,
 	});
-	const reaction = useRef<{ dispose: () => void; track: (fn: () => void) => void }>();
+	const reaction = useRef<{
+		dispose: () => void;
+		track: (fn: () => void) => void;
+	}>();
 	if (!reaction.current) {
 		reaction.current = createRoot((dispose) => ({
 			dispose,
-			track: createReaction(() => state.current.onUpdate())
+			track: createReaction(() => state.current.onUpdate()),
 		}));
 	}
 
@@ -54,12 +57,12 @@ export function useObserver<T>(fn: () => T) {
 export function useObserverWithOwner<T>(owner: Owner, fn: () => T) {
 	const [_, setTick] = useState(0);
 	const state = useRef({
-		onUpdate: () => {}
+		onUpdate: () => {},
 	});
 	const reaction = useRef<{ track: (fn: () => void) => void }>();
 	if (!reaction.current) {
 		reaction.current = runWithOwner(owner, () => ({
-			track: createReaction(() => state.current.onUpdate())
+			track: createReaction(() => state.current.onUpdate()),
 		}))!;
 	}
 

@@ -1,13 +1,13 @@
-import { createMutable } from 'solid-js/store';
+import { createMutable } from "solid-js/store";
 
-import { createPersistedMutable, useSolidStore } from '../solid';
+import { createPersistedMutable, useSolidStore } from "../solid";
 
 export const explorerLayout = createPersistedMutable(
-	'sd-explorer-layout',
+	"sd-explorer-layout",
 	createMutable({
 		showPathBar: true,
-		showImageSlider: true
-	})
+		showImageSlider: true,
+	}),
 );
 
 export function useExplorerLayoutStore() {

@@ -5,8 +5,8 @@ import {
 	PropsWithChildren,
 	ReactPortal,
 	useEffect,
-	useRef
-} from 'react';
+	useRef,
+} from "react";
 import {
 	children,
 	createSignal,
@@ -14,11 +14,11 @@ import {
 	For,
 	Setter,
 	JSX as SolidJSX,
-	type Accessor
-} from 'solid-js';
-import { render } from 'solid-js/web';
+	type Accessor,
+} from "solid-js";
+import { render } from "solid-js/web";
 
-import { useObserver } from './useObserver';
+import { useObserver } from "./useObserver";
 
 export type PortalCtx = {
 	setSolidPortals: Setter<Portal<SolidJSX.Element>[]>;
@@ -39,8 +39,8 @@ export function InteropProviderReact(props: PropsWithChildren) {
 		solidPortals: createSignal([] as Portal<SolidJSX.Element>[]),
 		reactPortals: createSignal([] as Portal<ReactPortal>[]),
 		// We only render portals in this so it's never rendered to the DOM
-		solidRoot: document.createElement('div'),
-		didFireFirstRender: false
+		solidRoot: document.createElement("div"),
+		didFireFirstRender: false,
 	});
 
 	useEffect(() => {
@@ -57,25 +57,27 @@ export function InteropProviderReact(props: PropsWithChildren) {
 					get each() {
 						return state.current.solidPortals[0]();
 					},
-					children: (p) => children(() => p.portal) as any
+					children: (p) => children(() => p.portal) as any,
 				}),
-			state.current.solidRoot
+			state.current.solidRoot,
 		);
 		return cleanup;
 	}, []);
 
 	const value: PortalCtx = {
 		setSolidPortals: state.current.solidPortals[1],
-		setReactPortals: state.current.reactPortals[1]
+		setReactPortals: state.current.reactPortals[1],
 	};
-	const portals = createElement(RenderPortals, { portals: state.current.reactPortals[0] });
+	const portals = createElement(RenderPortals, {
+		portals: state.current.reactPortals[0],
+	});
 	return createElement(
 		reactPortalCtx.Provider,
 		{
-			value
+			value,
 		},
 		props.children,
-		portals
+		portals,
 	);
 }
 

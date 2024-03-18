@@ -1,30 +1,32 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useRef } from 'react';
-import { useForm, UseFormProps } from 'react-hook-form';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useRef } from "react";
+import { useForm, UseFormProps } from "react-hook-form";
+import { z } from "zod";
 
 export interface UseZodFormProps<S extends z.ZodObject<any>>
-	extends Exclude<UseFormProps<z.infer<S>>, 'resolver'> {
+	extends Exclude<UseFormProps<z.infer<S>>, "resolver"> {
 	schema?: S;
 }
 
-export function useZodForm<S extends z.ZodObject<any>>(props?: UseZodFormProps<S>) {
+export function useZodForm<S extends z.ZodObject<any>>(
+	props?: UseZodFormProps<S>,
+) {
 	const { schema, ...formProps } = props ?? {};
 
 	return useForm<z.infer<S>>({
 		...formProps,
-		resolver: zodResolver(schema || z.object({}))
+		resolver: zodResolver(schema || z.object({})),
 	});
 }
 
 export function useMultiZodForm<S extends Record<string, z.ZodObject<any>>>({
 	schemas,
 	defaultValues,
-	onData
+	onData,
 }: {
 	schemas: S;
 	defaultValues: {
-		[K in keyof S]?: UseZodFormProps<S[K]>['defaultValues'];
+		[K in keyof S]?: UseZodFormProps<S[K]>["defaultValues"];
 	};
 	onData?: (data: { [K in keyof S]?: z.infer<S[K]> }) => any;
 }) {
@@ -33,12 +35,12 @@ export function useMultiZodForm<S extends Record<string, z.ZodObject<any>>>({
 	return {
 		useForm<K extends keyof S>(
 			key: K,
-			props?: Exclude<UseZodFormProps<S[K]>, 'schema' | 'defaultValues'>
+			props?: Exclude<UseZodFormProps<S[K]>, "schema" | "defaultValues">,
 		) {
 			const form = useZodForm({
 				...props,
 				defaultValues: defaultValues[key],
-				schema: schemas[key]
+				schema: schemas[key],
 			});
 			const handleSubmit = form.handleSubmit;
 
@@ -49,15 +51,17 @@ export function useMultiZodForm<S extends Record<string, z.ZodObject<any>>>({
 						onData?.(formsData.current);
 						return onValid(data, e);
 					}, onError),
-				[handleSubmit, key]
+				[handleSubmit, key],
 			);
 
 			return form;
 		},
 		handleSubmit:
 			(
-				onValid: (data: { [K in keyof S]: z.infer<S[K]> }) => any | Promise<any>,
-				onError?: (key: keyof S) => void
+				onValid: (data: { [K in keyof S]: z.infer<S[K]> }) =>
+					| any
+					| Promise<any>,
+				onError?: (key: keyof S) => void,
 			) =>
 			() => {
 				for (const key of Object.keys(schemas)) {
@@ -68,6 +72,6 @@ export function useMultiZodForm<S extends Record<string, z.ZodObject<any>>>({
 				}
 
 				return onValid(formsData.current as any);
-			}
+			},
 	};
 }

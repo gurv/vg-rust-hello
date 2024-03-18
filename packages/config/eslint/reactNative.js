@@ -1,8 +1,8 @@
 module.exports = {
-	extends: [require.resolve('./base.js'), require.resolve('./tailwind.js')],
+	extends: [require.resolve("./base.js"), require.resolve("./tailwind.js")],
 	env: {
-		'react-native/react-native': true
+		"react-native/react-native": true,
 	},
-	plugins: ['react-native'],
-	ignorePatterns: ['android', 'ios', '.expo']
+	plugins: ["react-native"],
+	ignorePatterns: ["android", "ios", ".expo"],
 };

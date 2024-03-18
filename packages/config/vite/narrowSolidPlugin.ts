@@ -3,15 +3,19 @@
 // We vendor it due to: https://github.com/merged-js/react-solid/issues/1
 //
 
-import { createFilter } from '@rollup/pluginutils';
-import solidPlugin, { Options } from 'vite-plugin-solid';
+import { createFilter } from "@rollup/pluginutils";
+import solidPlugin, { Options } from "vite-plugin-solid";
 
 export interface NarrowSolidPluginOptions extends Partial<Options> {
 	include?: string | RegExp | Array<string> | Array<RegExp>;
 	exclude?: string | RegExp | Array<string> | Array<RegExp>;
 }
 
-export function narrowSolidPlugin({ include, exclude, ...rest }: NarrowSolidPluginOptions = {}) {
+export function narrowSolidPlugin({
+	include,
+	exclude,
+	...rest
+}: NarrowSolidPluginOptions = {}) {
 	const plugin = solidPlugin(rest);
 	const originalConfig = plugin.config!.bind(plugin);
 	const filter = createFilter(include, exclude);
@@ -21,8 +25,8 @@ export function narrowSolidPlugin({ include, exclude, ...rest }: NarrowSolidPlug
 			...baseConfig,
 			esbuild: {
 				include: exclude,
-				exclude: include
-			}
+				exclude: include,
+			},
 		};
 	};
 

@@ -1,11 +1,11 @@
-import { deepEqual } from 'fast-equals';
-import { useEffect, useMemo, useState } from 'react';
-import { proxy, subscribe } from 'valtio';
+import { deepEqual } from "fast-equals";
+import { useEffect, useMemo, useState } from "react";
+import { proxy, subscribe } from "valtio";
 
-export function resetStore<T extends Record<string, any>, E extends Record<string, any>>(
-	store: T,
-	defaults: E
-) {
+export function resetStore<
+	T extends Record<string, any>,
+	E extends Record<string, any>,
+>(store: T, defaults: E) {
 	for (const key in defaults) {
 		// @ts-ignore
 		store[key] = defaults[key];
@@ -19,7 +19,7 @@ export function valtioPersist<T extends object>(
 	opts?: {
 		saveFn?: (data: T) => any;
 		restoreFn?: (data: any) => T;
-	}
+	},
 ): T {
 	const d = localStorage.getItem(localStorageKey);
 	const p = proxy(
@@ -27,16 +27,22 @@ export function valtioPersist<T extends object>(
 			? opts?.restoreFn
 				? opts.restoreFn(JSON.parse(d))
 				: JSON.parse(d)
-			: initialObject
+			: initialObject,
 	);
 	subscribe(p, () =>
-		localStorage.setItem(localStorageKey, JSON.stringify(opts?.saveFn ? opts.saveFn(p) : p))
+		localStorage.setItem(
+			localStorageKey,
+			JSON.stringify(opts?.saveFn ? opts.saveFn(p) : p),
+		),
 	);
 	return p;
 }
 
 // Subscribe to a Valtio store in React with a selector function.
-export function useSelector<T extends object, U>(proxyObject: T, selector: (proxyObject: T) => U) {
+export function useSelector<T extends object, U>(
+	proxyObject: T,
+	selector: (proxyObject: T) => U,
+) {
 	const [slice, setSlice] = useState(() => selector(proxyObject));
 	useEffect(
 		() =>
@@ -52,7 +58,7 @@ export function useSelector<T extends object, U>(proxyObject: T, selector: (prox
 					return newResult;
 				});
 			}),
-		[proxyObject, selector]
+		[proxyObject, selector],
 	);
 
 	return slice;

@@ -5,11 +5,16 @@ import {
 	useContext,
 	useEffect,
 	useRef,
-	useState
-} from 'react';
+	useState,
+} from "react";
 
-import { ConnectionMethod, DiscoveryMethod, P2PEvent, PeerMetadata } from '../core';
-import { useBridgeSubscription } from '../rspc';
+import {
+	ConnectionMethod,
+	DiscoveryMethod,
+	P2PEvent,
+	PeerMetadata,
+} from "../core";
+import { useBridgeSubscription } from "../rspc";
 
 type Peer = {
 	connection: ConnectionMethod;
@@ -28,27 +33,31 @@ const Context = createContext<Context>(null as any);
 export function P2PContextProvider({ children }: PropsWithChildren) {
 	const events = useRef(new EventTarget());
 	const [[peers], setPeers] = useState([new Map<string, Peer>()]);
-	const [[spacedropProgresses], setSpacedropProgresses] = useState([new Map<string, number>()]);
+	const [[spacedropProgresses], setSpacedropProgresses] = useState([
+		new Map<string, number>(),
+	]);
 
-	useBridgeSubscription(['p2p.events'], {
+	useBridgeSubscription(["p2p.events"], {
 		onData(data) {
-			events.current.dispatchEvent(new CustomEvent('p2p-event', { detail: data }));
+			events.current.dispatchEvent(
+				new CustomEvent("p2p-event", { detail: data }),
+			);
 
-			if (data.type === 'PeerChange') {
+			if (data.type === "PeerChange") {
 				peers.set(data.identity, {
 					connection: data.connection,
 					discovery: data.discovery,
-					metadata: data.metadata
+					metadata: data.metadata,
 				});
 				setPeers([peers]);
-			} else if (data.type === 'PeerDelete') {
+			} else if (data.type === "PeerDelete") {
 				peers.delete(data.identity);
 				setPeers([peers]);
-			} else if (data.type === 'SpacedropProgress') {
+			} else if (data.type === "SpacedropProgress") {
 				spacedropProgresses.set(data.id, data.percent);
 				setSpacedropProgresses([spacedropProgresses]);
 			}
-		}
+		},
 	});
 
 	return (
@@ -56,7 +65,7 @@ export function P2PContextProvider({ children }: PropsWithChildren) {
 			value={{
 				peers,
 				spacedropProgresses,
-				events
+				events,
 			}}
 		>
 			{children}
@@ -73,11 +82,19 @@ export function usePeers() {
 }
 
 export function useDiscoveredPeers() {
-	return new Map([...usePeers()].filter(([, peer]) => peer.connection === 'Disconnected'));
+	return new Map(
+		[...usePeers()].filter(
+			([, peer]) => peer.connection === "Disconnected",
+		),
+	);
 }
 
 export function useConnectedPeers() {
-	return new Map([...usePeers()].filter(([, peer]) => peer.connection !== 'Disconnected'));
+	return new Map(
+		[...usePeers()].filter(
+			([, peer]) => peer.connection !== "Disconnected",
+		),
+	);
 }
 
 export function useSpacedropProgress(id: string) {
@@ -92,7 +109,8 @@ export function useP2PEvents(fn: (event: P2PEvent) => void) {
 			fn((e as any).detail);
 		};
 
-		ctx.events.current.addEventListener('p2p-event', handler);
-		return () => ctx.events.current.removeEventListener('p2p-event', handler);
+		ctx.events.current.addEventListener("p2p-event", handler);
+		return () =>
+			ctx.events.current.removeEventListener("p2p-event", handler);
 	});
 }

@@ -1,7 +1,7 @@
-import { createMutable } from 'solid-js/store';
+import { createMutable } from "solid-js/store";
 
-import { BuildInfo } from '../core';
-import { createPersistedMutable, useSolidStore } from '../solid';
+import { BuildInfo } from "../core";
+import { createPersistedMutable, useSolidStore } from "../solid";
 
 /**
  * Possible Platform types that can be sourced from `usePlatform().platform` or even hardcoded.
@@ -9,7 +9,7 @@ import { createPersistedMutable, useSolidStore } from '../solid';
  * @remarks
  * The `tauri` platform is renamed to `desktop` for analytic purposes.
  */
-export type PlausiblePlatformType = 'web' | 'mobile' | 'desktop' | 'unknown';
+export type PlausiblePlatformType = "web" | "mobile" | "desktop" | "unknown";
 
 type TelemetryState = {
 	shareFullTelemetry: boolean;
@@ -18,12 +18,12 @@ type TelemetryState = {
 };
 
 export const telemetryState = createPersistedMutable(
-	'sd-explorer-layout',
+	"sd-explorer-layout",
 	createMutable<TelemetryState>({
 		shareFullTelemetry: false, // false by default
-		platform: 'unknown',
-		buildInfo: undefined
-	})
+		platform: "unknown",
+		buildInfo: undefined,
+	}),
 );
 
 export function useTelemetryState() {

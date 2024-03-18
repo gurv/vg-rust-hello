@@ -1,6 +1,6 @@
-import { trackDeep } from '@solid-primitives/deep';
-import { createEffect, createRoot } from 'solid-js';
-import { type StoreNode } from 'solid-js/store';
+import { trackDeep } from "@solid-primitives/deep";
+import { createEffect, createRoot } from "solid-js";
+import { type StoreNode } from "solid-js/store";
 
 type CreatePersistedMutableOpts<T> = {
 	onSave?: (value: T) => T;
@@ -10,7 +10,7 @@ type CreatePersistedMutableOpts<T> = {
 export function createPersistedMutable<T extends StoreNode>(
 	key: string,
 	mutable: T,
-	opts?: CreatePersistedMutableOpts<T>
+	opts?: CreatePersistedMutableOpts<T>,
 ) {
 	try {
 		const value = localStorage.getItem(key);
@@ -19,7 +19,9 @@ export function createPersistedMutable<T extends StoreNode>(
 			Object.assign(mutable, persisted);
 		}
 	} catch (err) {
-		console.error(`Error loading persisted state from localStorage key '${key}': ${err}`);
+		console.error(
+			`Error loading persisted state from localStorage key '${key}': ${err}`,
+		);
 	}
 
 	// I tried using a `Proxy` here but I couldn't get it working with arrays.
@@ -39,7 +41,7 @@ export function createPersistedMutable<T extends StoreNode>(
 		});
 		return dispose;
 	});
-	if ('onHotReload' in globalThis) globalThis?.onHotReload(dispose);
+	if ("onHotReload" in globalThis) globalThis?.onHotReload(dispose);
 
 	return mutable;
 }

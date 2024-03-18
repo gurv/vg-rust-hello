@@ -38,7 +38,7 @@ $ cd ..
 
 $ cd hello-tauri
 $ cargo install tauri-cli
-$ cargo tauri dev 
+$ cargo tauri dev
 
 $ pnpm run --filter @vg/desktop tauri dev
 ```

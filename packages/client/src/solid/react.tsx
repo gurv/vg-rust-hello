@@ -5,15 +5,15 @@ import {
 	useEffect,
 	useId,
 	useContext as useReactContext,
-	useRef
-} from 'react';
-import { Accessor, createSignal, JSX as SolidJSX } from 'solid-js';
-import { createStore } from 'solid-js/store';
-import { Portal as SolidPortal } from 'solid-js/web';
+	useRef,
+} from "react";
+import { Accessor, createSignal, JSX as SolidJSX } from "solid-js";
+import { createStore } from "solid-js/store";
+import { Portal as SolidPortal } from "solid-js/web";
 
-import { useWithContextReact } from './context';
-import { reactPortalCtx, solidPortalCtx, type Portal } from './portals';
-import { useObserver } from './useObserver';
+import { useWithContextReact } from "./context";
+import { reactPortalCtx, solidPortalCtx, type Portal } from "./portals";
+import { useObserver } from "./useObserver";
 
 type Props<T> =
 	| ({
@@ -25,14 +25,14 @@ type Props<T> =
 
 export function WithSolid<T>(props: Props<T>) {
 	const portalCtx = useReactContext(reactPortalCtx);
-	if (!portalCtx) throw new Error('Missing portalCtx in WithSolid');
+	if (!portalCtx) throw new Error("Missing portalCtx in WithSolid");
 
 	const id = useId();
 	const ref = useRef<HTMLDivElement>(null);
 	const state = useRef({
 		hasFirstRender: false,
 		trackedProps: createStore(props),
-		reactPortals: createSignal([] as Portal<ReactPortal>[])
+		reactPortals: createSignal([] as Portal<ReactPortal>[]),
 	});
 
 	const applyCtx = useWithContextReact();
@@ -61,23 +61,28 @@ export function WithSolid<T>(props: Props<T>) {
 							return solidPortalCtx.Provider({
 								value: {
 									setSolidPortals: portalCtx.setSolidPortals,
-									setReactPortals: state.current.reactPortals[1]
+									setReactPortals:
+										state.current.reactPortals[1],
 								},
 								get children() {
 									return applyCtx(() =>
-										props.root(state.current.trackedProps[0] as T)
+										props.root(
+											state.current.trackedProps[0] as T,
+										),
 									);
-								}
+								},
 							});
-						}
+						},
 					});
-				}) as any
-			}
+				}) as any,
+			},
 		]);
 
 		return () => {
 			if (!hasFirstRender) return;
-			portalCtx.setSolidPortals((portals) => portals.filter((p) => p.id !== id));
+			portalCtx.setSolidPortals((portals) =>
+				portals.filter((p) => p.id !== id),
+			);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []); // TODO: props.root

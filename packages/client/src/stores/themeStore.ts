@@ -1,18 +1,18 @@
-import { deepEqual } from 'fast-equals';
-import { useRef } from 'react';
-import { createMutable } from 'solid-js/store';
+import { deepEqual } from "fast-equals";
+import { useRef } from "react";
+import { createMutable } from "solid-js/store";
 
-import { createPersistedMutable, useObserver, useSolidStore } from '../solid';
+import { createPersistedMutable, useObserver, useSolidStore } from "../solid";
 
-export type Themes = 'vanilla' | 'dark';
+export type Themes = "vanilla" | "dark";
 
 export const themeStore = createPersistedMutable(
-	'sd-theme',
+	"sd-theme",
 	createMutable({
-		theme: 'dark' as Themes,
+		theme: "dark" as Themes,
 		syncThemeWithSystem: false,
-		hueValue: 235
-	})
+		hueValue: 235,
+	}),
 );
 
 export function useThemeStore() {
@@ -34,5 +34,5 @@ export function useSubscribeToThemeStore(callback: () => void) {
 }
 
 export function isDarkTheme() {
-	return themeStore.theme === 'dark';
+	return themeStore.theme === "dark";
 }

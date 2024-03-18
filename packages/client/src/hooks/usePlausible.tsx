@@ -1,20 +1,26 @@
-import Plausible, { PlausibleOptions as PlausibleTrackerOptions } from 'plausible-tracker';
-import { useCallback, useEffect, useRef } from 'react';
+import Plausible, {
+	PlausibleOptions as PlausibleTrackerOptions,
+} from "plausible-tracker";
+import { useCallback, useEffect, useRef } from "react";
 
-import { BuildInfo } from '../core';
-import { useDebugState } from '../stores/debugState';
-import { PlausiblePlatformType, telemetryState, useTelemetryState } from '../stores/telemetryState';
+import { BuildInfo } from "../core";
+import { useDebugState } from "../stores/debugState";
+import {
+	PlausiblePlatformType,
+	telemetryState,
+	useTelemetryState,
+} from "../stores/telemetryState";
 
 /**
  * This should be in sync with the Core's version.
  */
 
-const DOMAIN = 'app.spacedrive.com';
-const MOBILE_DOMAIN = 'mobile.spacedrive.com';
+const DOMAIN = "app.spacedrive.com";
+const MOBILE_DOMAIN = "mobile.spacedrive.com";
 
 const PlausibleProvider = Plausible({
 	trackLocalhost: true,
-	domain: DOMAIN
+	domain: DOMAIN,
 });
 
 /**
@@ -57,7 +63,7 @@ export type BasePlausibleEvent<T, O = void> = O extends keyof PlausibleOptions
  * **Do not use this directly. Instead, use the
  * {@link usePlausiblePageViewMonitor `usePlausiblePageViewMonitor`} hook**.
  */
-type PageViewEvent = BasePlausibleEvent<'pageview', 'url'>;
+type PageViewEvent = BasePlausibleEvent<"pageview", "url">;
 
 /**
  * The custom Plausible `libraryCreate` event.
@@ -78,17 +84,17 @@ type PageViewEvent = BasePlausibleEvent<'pageview', 'url'>;
  * });
  * ```
  */
-type LibraryCreateEvent = BasePlausibleEvent<'libraryCreate'>;
-type LibraryDeleteEvent = BasePlausibleEvent<'libraryDelete'>;
+type LibraryCreateEvent = BasePlausibleEvent<"libraryCreate">;
+type LibraryDeleteEvent = BasePlausibleEvent<"libraryDelete">;
 
-type LocationCreateEvent = BasePlausibleEvent<'locationCreate'>;
-type LocationDeleteEvent = BasePlausibleEvent<'locationDelete'>;
+type LocationCreateEvent = BasePlausibleEvent<"locationCreate">;
+type LocationDeleteEvent = BasePlausibleEvent<"locationDelete">;
 
-type TagCreateEvent = BasePlausibleEvent<'tagCreate'>;
-type TagDeleteEvent = BasePlausibleEvent<'tagDelete'>;
-type TagAssignEvent = BasePlausibleEvent<'tagAssign'>;
+type TagCreateEvent = BasePlausibleEvent<"tagCreate">;
+type TagDeleteEvent = BasePlausibleEvent<"tagDelete">;
+type TagAssignEvent = BasePlausibleEvent<"tagAssign">;
 
-type PingEvent = BasePlausibleEvent<'ping'>;
+type PingEvent = BasePlausibleEvent<"ping">;
 
 /**
  * All union of available, ready-to-use events.
@@ -184,13 +190,18 @@ interface SubmitEventProps {
  * @see {@link https://plausible.io/docs/custom-event-goals Custom events}
  * @see {@link https://plausible-tracker.netlify.app/#tracking-custom-events-and-goals Tracking custom events}
  */
-const submitPlausibleEvent = async ({ event, debugState, ...props }: SubmitEventProps) => {
-	if (props.platformType === 'unknown') return;
+const submitPlausibleEvent = async ({
+	event,
+	debugState,
+	...props
+}: SubmitEventProps) => {
+	if (props.platformType === "unknown") return;
 	// if (debugState.enabled && debugState.shareFullTelemetry !== true) return;
 	if (
-		'plausibleOptions' in event && 'telemetryOverride' in event.plausibleOptions
+		"plausibleOptions" in event &&
+		"telemetryOverride" in event.plausibleOptions
 			? event.plausibleOptions.telemetryOverride !== true
-			: props.shareFullTelemetry !== true && event.type !== 'ping'
+			: props.shareFullTelemetry !== true && event.type !== "ping"
 	)
 		return;
 
@@ -199,31 +210,33 @@ const submitPlausibleEvent = async ({ event, debugState, ...props }: SubmitEvent
 		props: {
 			platform: props.platformType,
 			fullTelemetry: props.shareFullTelemetry,
-			coreVersion: props.buildInfo?.version ?? '0.1.0', // TODO(brxken128): clean this up
-			commitHash: props.buildInfo?.commit ?? '0.1.0',
-			debug: debugState.enabled
+			coreVersion: props.buildInfo?.version ?? "0.1.0", // TODO(brxken128): clean this up
+			commitHash: props.buildInfo?.commit ?? "0.1.0",
+			debug: debugState.enabled,
 		},
 		options: {
-			domain: props.platformType === 'mobile' ? MOBILE_DOMAIN : DOMAIN,
+			domain: props.platformType === "mobile" ? MOBILE_DOMAIN : DOMAIN,
 			deviceWidth: props.screenWidth ?? window.screen.width,
-			referrer: '',
-			...('plausibleOptions' in event ? event.plausibleOptions : undefined)
+			referrer: "",
+			...("plausibleOptions" in event
+				? event.plausibleOptions
+				: undefined),
 		},
 		callback: debugState.telemetryLogging
 			? () => {
 					const { callback: _, ...event } = fullEvent;
 					console.log(event);
 				}
-			: undefined
+			: undefined,
 	};
 
 	PlausibleProvider.trackEvent(
 		fullEvent.eventName,
 		{
 			props: fullEvent.props,
-			callback: fullEvent.callback
+			callback: fullEvent.callback,
 		},
-		fullEvent.options
+		fullEvent.options,
 	);
 };
 
@@ -286,10 +299,10 @@ export const usePlausibleEvent = () => {
 				shareFullTelemetry: telemetryState.shareFullTelemetry,
 				platformType: telemetryState.platform,
 				buildInfo: telemetryState.buildInfo,
-				...props
+				...props,
 			});
 		},
-		[debugState, telemetryState]
+		[debugState, telemetryState],
 	);
 };
 
@@ -327,15 +340,17 @@ export interface PlausibleMonitorProps {
  *  });
  * ```
  */
-export const usePlausiblePageViewMonitor = ({ currentPath }: PlausibleMonitorProps) => {
+export const usePlausiblePageViewMonitor = ({
+	currentPath,
+}: PlausibleMonitorProps) => {
 	const plausibleEvent = usePlausibleEvent();
 
 	useEffect(() => {
 		plausibleEvent({
 			event: {
-				type: 'pageview',
-				plausibleOptions: { url: currentPath }
-			}
+				type: "pageview",
+				plausibleOptions: { url: currentPath },
+			},
 		});
 	}, [currentPath, plausibleEvent]);
 };
@@ -354,21 +369,23 @@ export const usePlausiblePageViewMonitor = ({ currentPath }: PlausibleMonitorPro
  * sharing settings are (minimum or full).
  *
  */
-export const usePlausiblePingMonitor = ({ currentPath }: PlausibleMonitorProps) => {
+export const usePlausiblePingMonitor = ({
+	currentPath,
+}: PlausibleMonitorProps) => {
 	const plausibleEvent = usePlausibleEvent();
 
 	useEffect(() => {
 		plausibleEvent({
 			event: {
-				type: 'ping'
-			}
+				type: "ping",
+			},
 		});
 	}, [currentPath, plausibleEvent]);
 };
 
 export const initPlausible = ({
 	platformType,
-	buildInfo
+	buildInfo,
 }: {
 	platformType: PlausiblePlatformType;
 	buildInfo: BuildInfo | undefined;

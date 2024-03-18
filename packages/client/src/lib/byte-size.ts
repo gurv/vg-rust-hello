@@ -1,22 +1,22 @@
 // Inspired by: https://github.com/75lb/byte-size
 
 const DECIMAL_UNITS = [
-	{ short: 'B', long: 'bytes', from: 0n },
-	{ short: 'kB', long: 'kilobytes', from: 1000n },
-	{ short: 'MB', long: 'megabytes', from: 1000n ** 2n },
-	{ short: 'GB', long: 'gigabytes', from: 1000n ** 3n },
-	{ short: 'TB', long: 'terabytes', from: 1000n ** 4n },
-	{ short: 'PB', long: 'petabytes', from: 1000n ** 5n },
-	{ short: 'EB', long: 'exabytes', from: 1000n ** 6n },
-	{ short: 'ZB', long: 'zettabytes', from: 1000n ** 7n },
-	{ short: 'YB', long: 'yottabytes', from: 1000n ** 8n },
-	{ short: 'RB', long: 'ronnabyte', from: 1000n ** 9n },
-	{ short: 'QB', long: 'quettabyte', from: 1000n ** 10n }
+	{ short: "B", long: "bytes", from: 0n },
+	{ short: "kB", long: "kilobytes", from: 1000n },
+	{ short: "MB", long: "megabytes", from: 1000n ** 2n },
+	{ short: "GB", long: "gigabytes", from: 1000n ** 3n },
+	{ short: "TB", long: "terabytes", from: 1000n ** 4n },
+	{ short: "PB", long: "petabytes", from: 1000n ** 5n },
+	{ short: "EB", long: "exabytes", from: 1000n ** 6n },
+	{ short: "ZB", long: "zettabytes", from: 1000n ** 7n },
+	{ short: "YB", long: "yottabytes", from: 1000n ** 8n },
+	{ short: "RB", long: "ronnabyte", from: 1000n ** 9n },
+	{ short: "QB", long: "quettabyte", from: 1000n ** 10n },
 ];
 
 const getDecimalUnit = (n: bigint) => {
 	const s = n.toString(10);
-	const log10 = s.length + Math.log10(Number('0.' + s.substring(0, 15)));
+	const log10 = s.length + Math.log10(Number("0." + s.substring(0, 15)));
 	const index = (log10 / 3) | 0;
 	return (
 		DECIMAL_UNITS[index] ??
@@ -29,8 +29,10 @@ const getDecimalUnit = (n: bigint) => {
 
 export function bytesToNumber(bytes: string[] | number[] | bigint[]) {
 	return bytes
-		.map((b) => (typeof b === 'bigint' ? b : BigInt(b)))
-		.reduce((acc, curr, i) => acc + curr * 256n ** BigInt(bytes.length - i - 1));
+		.map((b) => (typeof b === "bigint" ? b : BigInt(b)))
+		.reduce(
+			(acc, curr, i) => acc + curr * 256n ** BigInt(bytes.length - i - 1),
+		);
 }
 
 export interface ByteSizeOpts {
@@ -47,19 +49,27 @@ export interface ByteSizeOpts {
  * @param options.precision - Number of decimal places. Defaults to `1`.
  */
 export const byteSize = (
-	value: null | string | number | bigint | string[] | number[] | bigint[] | undefined,
-	{ precision, locales }: ByteSizeOpts = { precision: 1 }
+	value:
+		| null
+		| string
+		| number
+		| bigint
+		| string[]
+		| number[]
+		| bigint[]
+		| undefined,
+	{ precision, locales }: ByteSizeOpts = { precision: 1 },
 ) => {
 	if (value == null) value = 0n;
 	if (Array.isArray(value)) value = bytesToNumber(value);
-	else if (typeof value !== 'bigint') value = BigInt(value);
+	else if (typeof value !== "bigint") value = BigInt(value);
 	const [isNegative, bytes] = value < 0n ? [true, -value] : [false, value];
 
 	const unit = getDecimalUnit(bytes);
 	const defaultFormat = new Intl.NumberFormat(locales, {
-		style: 'decimal',
+		style: "decimal",
 		minimumFractionDigits: precision,
-		maximumFractionDigits: precision
+		maximumFractionDigits: precision,
 	});
 	const precisionFactor = 10 ** precision;
 	return {
@@ -69,10 +79,11 @@ export const byteSize = (
 			(isNegative ? -1 : 1) *
 			(unit.from === 0n
 				? Number(bytes)
-				: Number((bytes * BigInt(precisionFactor)) / unit.from) / precisionFactor),
+				: Number((bytes * BigInt(precisionFactor)) / unit.from) /
+					precisionFactor),
 		original: value,
 		toString() {
 			return `${defaultFormat.format(this.value)} ${this.unit}`;
-		}
+		},
 	};
 };

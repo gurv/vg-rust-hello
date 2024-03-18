@@ -4,4 +4,4 @@ declare interface ImportMetaEnv {
 	VITE_OS: string;
 }
 
-declare module '@babel/core' {}
+declare module "@babel/core" {}

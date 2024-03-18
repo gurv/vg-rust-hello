@@ -1,7 +1,7 @@
-import { FilePathOrder, FilePathSearchArgs } from '../core';
-import { useLibraryQuery } from '../rspc';
-import { useExplorerQuery } from './useExplorerQuery';
-import { usePathsOffsetInfiniteQuery } from './usePathsOffsetInfiniteQuery';
+import { FilePathOrder, FilePathSearchArgs } from "../core";
+import { useLibraryQuery } from "../rspc";
+import { useExplorerQuery } from "./useExplorerQuery";
+import { usePathsOffsetInfiniteQuery } from "./usePathsOffsetInfiniteQuery";
 
 export function usePathsExplorerQuery(props: {
 	arg: FilePathSearchArgs;
@@ -11,9 +11,12 @@ export function usePathsExplorerQuery(props: {
 }) {
 	const query = usePathsOffsetInfiniteQuery(props);
 
-	const count = useLibraryQuery(['search.pathsCount', { filters: props.arg.filters }], {
-		enabled: query.isSuccess
-	});
+	const count = useLibraryQuery(
+		["search.pathsCount", { filters: props.arg.filters }],
+		{
+			enabled: query.isSuccess,
+		},
+	);
 
 	return useExplorerQuery(query, count);
 }

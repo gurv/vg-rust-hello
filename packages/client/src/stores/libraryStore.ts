@@ -1,9 +1,9 @@
-import { createMutable } from 'solid-js/store';
+import { createMutable } from "solid-js/store";
 
-import { useSolidStore } from '../solid';
+import { useSolidStore } from "../solid";
 
 export const libraryStore = createMutable({
-	onlineLocations: [] as number[][]
+	onlineLocations: [] as number[][],
 });
 
 export function useLibraryStore() {

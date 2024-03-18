@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query";
 import {
 	createContext,
 	PropsWithChildren,
@@ -7,12 +7,12 @@ import {
 	useMemo,
 	useRef,
 	useState,
-	useSyncExternalStore
-} from 'react';
-import { proxy, snapshot, subscribe } from 'valtio';
+	useSyncExternalStore,
+} from "react";
+import { proxy, snapshot, subscribe } from "valtio";
 
-import { type CacheNode } from './core';
-import { getPermits } from './rspc-cursed';
+import { type CacheNode } from "./core";
+import { getPermits } from "./rspc-cursed";
 
 declare global {
 	interface Window {
@@ -25,7 +25,7 @@ type Context = ReturnType<typeof createCache>;
 export type NormalisedCache = ReturnType<typeof createCache>;
 
 const defaultStore = () => ({
-	nodes: {} as Record<string, Record<string, unknown>>
+	nodes: {} as Record<string, Record<string, unknown>>,
 });
 
 const Context = createContext<Context>(undefined!);
@@ -39,13 +39,16 @@ export function createCache() {
 		},
 		withCache<T>(data: T | undefined, suffix?: string): UseCacheResult<T> {
 			return restore(cache, new Map(), data, suffix) as any;
-		}
+		},
 	};
 }
 
-export function CacheProvider({ cache, children }: PropsWithChildren<{ cache: NormalisedCache }>) {
+export function CacheProvider({
+	cache,
+	children,
+}: PropsWithChildren<{ cache: NormalisedCache }>) {
 	useEffect(() => {
-		if ('__REDUX_DEVTOOLS_EXTENSION__' in window === false) return;
+		if ("__REDUX_DEVTOOLS_EXTENSION__" in window === false) return;
 
 		const devtools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({});
 
@@ -54,7 +57,9 @@ export function CacheProvider({ cache, children }: PropsWithChildren<{ cache: No
 		});
 
 		devtools.init();
-		subscribe(cache.cache, () => devtools.send('change', snapshot(cache.cache)));
+		subscribe(cache.cache, () =>
+			devtools.send("change", snapshot(cache.cache)),
+		);
 
 		return () => {
 			unsub();
@@ -68,13 +73,20 @@ export function CacheProvider({ cache, children }: PropsWithChildren<{ cache: No
 		const interval = setInterval(() => {
 			const permits = getPermits();
 			if (permits !== 0) {
-				console.warn('Not safe to cleanup cache. ${permits} permits currently held.');
+				console.warn(
+					"Not safe to cleanup cache. ${permits} permits currently held.",
+				);
 				return;
 			}
 
 			const requiredKeys = new StableSet<[string, string]>();
 			for (const query of queryClient.getQueryCache().getAll()) {
-				if (query.state.data) scanDataForKeys(cache.cache, requiredKeys, query.state.data);
+				if (query.state.data)
+					scanDataForKeys(
+						cache.cache,
+						requiredKeys,
+						query.state.data,
+					);
 			}
 
 			const existingKeys = new StableSet<[string, string]>();
@@ -98,20 +110,26 @@ export function CacheProvider({ cache, children }: PropsWithChildren<{ cache: No
 
 export function useCacheContext() {
 	const context = useContext(Context);
-	if (!context) throw new Error('Missing `CacheContext` provider!');
+	if (!context) throw new Error("Missing `CacheContext` provider!");
 	return context;
 }
 
-function scanDataForKeys(cache: Store, keys: StableSet<[string, string]>, item: unknown) {
+function scanDataForKeys(
+	cache: Store,
+	keys: StableSet<[string, string]>,
+	item: unknown,
+) {
 	if (item === undefined || item === null) return;
 	if (Array.isArray(item)) {
 		for (const v of item) {
 			scanDataForKeys(cache, keys, v);
 		}
-	} else if (typeof item === 'object') {
-		if ('__type' in item && '__id' in item) {
-			if (typeof item.__type !== 'string') throw new Error('Invalid `__type`');
-			if (typeof item.__id !== 'string') throw new Error('Invalid `__id`');
+	} else if (typeof item === "object") {
+		if ("__type" in item && "__id" in item) {
+			if (typeof item.__type !== "string")
+				throw new Error("Invalid `__type`");
+			if (typeof item.__id !== "string")
+				throw new Error("Invalid `__id`");
 			keys.add([item.__type, item.__id]);
 			const result = cache.nodes?.[item.__type]?.[item.__id];
 			if (result) scanDataForKeys(cache, keys, result);
@@ -127,20 +145,25 @@ function restore(
 	cache: Store,
 	subscribed: Map<string, Set<unknown>>,
 	item: unknown,
-	suffix?: string
+	suffix?: string,
 ): unknown {
 	if (item === undefined || item === null) {
 		return item;
 	} else if (Array.isArray(item)) {
 		return item.map((v) => restore(cache, subscribed, v));
-	} else if (typeof item === 'object') {
-		if ('__type' in item && '__id' in item) {
-			if (typeof item.__type !== 'string') throw new Error('Invalid `__type`');
-			if (typeof item.__id !== 'string') throw new Error('Invalid `__id`');
+	} else if (typeof item === "object") {
+		if ("__type" in item && "__id" in item) {
+			if (typeof item.__type !== "string")
+				throw new Error("Invalid `__type`");
+			if (typeof item.__id !== "string")
+				throw new Error("Invalid `__id`");
 			const ty = suffix ? `${suffix}:${item.__type}` : item.__type;
 
 			const result = cache.nodes?.[ty]?.[item.__id];
-			if (!result) throw new Error(`Missing node for id '${item.__id}' of type '${ty}'`);
+			if (!result)
+				throw new Error(
+					`Missing node for id '${item.__id}' of type '${ty}'`,
+				);
 
 			const v = subscribed.get(ty);
 			if (v) {
@@ -153,13 +176,16 @@ function restore(
 			return Object.fromEntries(
 				Object.entries(result).map(([key, value]) => [
 					key,
-					restore(cache, subscribed, value)
-				])
+					restore(cache, subscribed, value),
+				]),
 			);
 		}
 
 		return Object.fromEntries(
-			Object.entries(item).map(([key, value]) => [key, restore(cache, subscribed, value)])
+			Object.entries(item).map(([key, value]) => [
+				key,
+				restore(cache, subscribed, value),
+			]),
 		);
 	}
 
@@ -180,19 +206,25 @@ export function useNormalisedCache() {
 	const cache = useCacheContext();
 
 	return {
-		'#cache': cache.cache,
-		'withNodes': cache.withNodes,
-		'withCache': cache.withCache
+		"#cache": cache.cache,
+		withNodes: cache.withNodes,
+		withCache: cache.withCache,
 	};
 }
 
-function updateNodes(cache: Store, data: CacheNode[] | undefined, suffix?: string) {
+function updateNodes(
+	cache: Store,
+	data: CacheNode[] | undefined,
+	suffix?: string,
+) {
 	if (!data) return;
 
 	for (const item of data) {
-		if (!('__type' in item && '__id' in item)) throw new Error('Missing `__type` or `__id`');
-		if (typeof item.__type !== 'string') throw new Error('Invalid `__type`');
-		if (typeof item.__id !== 'string') throw new Error('Invalid `__id`');
+		if (!("__type" in item && "__id" in item))
+			throw new Error("Missing `__type` or `__id`");
+		if (typeof item.__type !== "string")
+			throw new Error("Invalid `__type`");
+		if (typeof item.__id !== "string") throw new Error("Invalid `__id`");
 		const ty = suffix ? `${suffix}:${item.__type}` : item.__type;
 
 		const copy = { ...item } as any;
@@ -219,15 +251,18 @@ function updateNodes(cache: Store, data: CacheNode[] | undefined, suffix?: strin
 function specialMerge(copy: Record<any, any>, original: unknown) {
 	if (
 		original &&
-		typeof original === 'object' &&
-		typeof copy === 'object' &&
+		typeof original === "object" &&
+		typeof copy === "object" &&
 		!Array.isArray(original) &&
 		!Array.isArray(copy)
 	) {
 		for (const [property, value] of Object.entries(original)) {
 			copy[property] = copy[property] || value;
 
-			if (typeof copy[property] === 'object' && !Array.isArray(copy[property]))
+			if (
+				typeof copy[property] === "object" &&
+				!Array.isArray(copy[property])
+			)
 				specialMerge(copy[property], value);
 		}
 	}
@@ -236,7 +271,7 @@ function specialMerge(copy: Record<any, any>, original: unknown) {
 export type UseCacheResult<T> = T extends (infer A)[]
 	? UseCacheResult<A>[]
 	: T extends object
-		? T extends { '__type': any; '__id': string; '#type': infer U }
+		? T extends { __type: any; __id: string; "#type": infer U }
 			? UseCacheResult<U>
 			: { [K in keyof T]: UseCacheResult<T[K]> }
 		: { [K in keyof T]: UseCacheResult<T[K]> };
@@ -249,7 +284,7 @@ export function useCache<T>(data: T | undefined) {
 	const state = useMemo(
 		() => restore(cache.cache, subscribed, data) as UseCacheResult<T>,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[cache, data, i]
+		[cache, data, i],
 	);
 
 	return useSyncExternalStore(
@@ -269,7 +304,7 @@ export function useCache<T>(data: T | undefined) {
 				}
 			});
 		},
-		() => state
+		() => state,
 	);
 }
 
